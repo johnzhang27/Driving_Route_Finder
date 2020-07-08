@@ -1,0 +1,140 @@
+Name: YongQuan Zhang
+ID #: 1515873
+CMPUT 275 Winter20
+
+Assignment 2 Part 2: Directions
+
+NOTE: I finished this assignment ALONE, my partner had 0 contribution to this assginment and that is why I only put my name in READEME and codes. I already inform Zac about this but unfortunately Zac said we still gonna submit this assginment as a group. But Zac is gonna adjust the mark of my assignment partner.
+
+
+Included Files:
+
+	For server folder:
+
+	- server.cpp (This is implement by me, it includes 4 functions and this is the main target of the makefile. I build off readgraph function based on my solution of weekly exercise 5).
+
+	- digraph.cpp (provided by instructor.)
+	
+	- digraph.h (provided by instructor.)
+
+	-wdigraph.h (provided by insstructor, this file provide us a getcost function and overwrite the addvertex function).
+
+	- heap.h (provided by instrcutor)
+
+	- dijkstra.cpp (This is implement by me, it includes 1 function, no main function).
+
+	- dijkstra.h (header file for dijkstra.cpp).
+
+	- serialport.cpp (provided by instructor)
+
+	- serialport.h (header file for serialport.cpp)
+
+	- serialtest.cpp (This is a test file to test serialport.cpp, it has nothing to do with assignment 2 part 2.)
+
+	- Makefile (custom makefile)
+
+	- edmonton-roads-2.0.1.txt (the input)
+
+	For client folder:
+
+	- client.cpp (This provided by the instructor, I changed it by including more header like draw_route.h and serial_handling.h. Also I added few lines at line 188-193 to redraw the green bar on display in order to make sure no route will draw on the green bar.)
+
+	- consts_and_types.h (This file includes a lot of global varibales that will be used in this assginment. Provided by instructor.)
+
+	- draw_route.cpp (This implemented by me and it is a simple function that could draw lines on the tft display.)
+
+	- draw_route.h (header file for draw_route).
+
+	- instruction.txt (Provided by instructor and tell us what should we do for the assignment, it has nothing to do with codes excution but since it is included in the start codes so I include them as well).
+
+	- lcd_image.cpp and lcd_image.h is provided by instructors.
+
+	- Makefile (Provided by instructor, this is a Arduino makefile).
+
+	- map_drawing.cpp (This is provide by instructor, it contains some custom function that be used in the client.cpp like status_message).
+
+	- map_drawing.h (provided by instructor and it is the header file for map_drawing).
+
+	- serial_handling.cpp (This implement by me and the main function of this file is to do the communication protocol as what described in the assignment description.)
+
+	- serial_handling.h (This is implement by me and it is the header file for serial_handling).
+
+Accessorise:
+	* 1 Arduino Mega Board(AMG)
+	* USB cable
+	* touchscreen
+	* A custome SD card provided by instructor
+	* A breadboard
+	* 11 wires
+	* A joysticker
+	* 2 pushbuttons
+
+Wiring instructions: 
+	Touchscreen connect with Arduino Mega Board(insert left side of the touchscreen from Pin 3.3V to
+	Pin A5. Insert the right side of the touchscreen from Pin AREF to Pin RX0<-0.
+	Arduino's Pin A8 <--> VRy of joystick.
+	Arduino's Pin A9 <--> VRx of joystick.
+	Arduino's Pin 5v <--> "+" on breadboard <--> +5V on joystick.
+	Arduino's Pin GND <--> "-" on breadboard <--> GND on joystick.
+	Arduino's Pin 53 <--> SW on joystick.
+	Arduino's Pin 45 <--> Zoom in pushbutton
+	Arduino's Pin 47 <--> Zoom out pushbutton
+	Ground on breadboard <--> both pushbuttons
+	Insert the SD card into touchscreen.
+
+Running the code:
+
+FOR SERVER: 
+
+You should change directory to server and then:
+1. Go to the terminal and type "make" to make 1 excutable files for server.cpp by linking server.o, dijkstra.o, serialport.o and digraph.o.
+2. Type "make server.o" or "make digraph.o" or "make dijkstra.o" or "make serialport.o" could make the .o files which is the intermedian file for the excutable file.
+3. You could type "make clean" to delete all excutable files.
+
+"./server" will run the program and it will refresh the Arduino sides.
+
+Notes: sometimes if the server is not responding, then you should make upload for client and call ./server again.
+
+FOR CLIENT:
+
+Go to client folder and type "make upload".
+
+Notes and Assumptions:
+	
+	FOR SERVER:
+
+	dijkstra.cpp contains 1 function:
+
+	void dijkstra(const WDigraph& graph, int startVertex, 
+    unordered_map<int, PIL>& searchTree)
+This function uses heap to find the shortest path from the start vertex to the end and store the path using a search tree structure. It will go through all the connected vertices of the start vertex and when it reached a vertice that has been visited, the path will be ignored. We used binaryheap structure in this function, binaryheap is made up of many heapitem structure(item and key).
+
+
+	server.cpp: Contains 4 functions:
+
+	I implemented 4 functions:
+
+	- long long manhattan(const Point& pt1, const Point& pt2)
+This function calculate the manhattan distance.
+
+	- void readGraph(string filename, WDigraph& graph, unordered_map<int, Point>& points)
+This is similar with what I did in weekly exercise 5, the difference is instead of return an address of the digraph, we use return by reference to pass the wdigraph. Also we add start and end vertice and the cost between them to a structure called points for future usage.)
+
+	- int findClosestVertex(const Point inputPoint,const unordered_map<int, Point>& points)
+Since the input latitude and longitude might not be a valid vertice, so we need find the closet vertice.
+
+	-int main()
+Main function to excute all other functions.
+
+
+	FOR CLIENT: 
+
+	draw_route.cpp constains one function.
+
+	serial_handling.cpp contains 3 functions:
+
+	void readline(String &readFromSerial), a custom readline function that could read an entire lien from buffer.
+
+	bool  wait_on_serial( uint8_t  nbytes , long  timeout), the function we used for CMPUT 274 assignment. I used it to do the timeout thing.
+
+	uint8_t get_waypoints(const lon_lat_32& start, const lon_lat_32& end), the function that contains communication protocol, it will read the waypoints from buffer and store them in a global structure waypoints[].
